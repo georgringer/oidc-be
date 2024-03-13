@@ -1,0 +1,37 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:layout name="Login" />
+<f:section name="loginFormFields">
+    <style>
+        #t3-login-submit { display: none }
+        .oidc-links {
+            padding-bottom: 2ex;
+        }
+        .oidc-links .btn {
+            text-align: left;
+            font-size: 120%;
+            font-weight: bold;
+        }
+        .oidc-links .btn img {
+            display: inline-block;
+            margin-right: 15px;
+        }
+    </style>
+            <input type="hidden" name="oidcLoginType" value="be"/>
+    <input type="hidden" name="loginProvider" value="1710277788">
+    <input type="hidden" name="client_id" value="{oidcClientKey}">
+    <input type="hidden" name="scope" value="openid profile email offline_access user.read">
+    <input type="hidden" name="state" value="{state}">
+    <input type="hidden" name="response_type" value="code">
+    <input type="hidden" name="redirect_uri" value="{redirectUri}">
+            <div class="oidc-links">
+                <h1><f:translate key="provider-select" extensionName="oidc_client"/></h1>
+                    <button type="submit" name="oidcProvider" value="1710277788" class="btn btn-block btn-login" style="background-color: #ccc">
+                        <core:icon identifier="ext-oidcbe-icon"/>
+                    Open ID Connect
+            </div>
+
+</f:section>
+</html>

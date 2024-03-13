@@ -1,0 +1,17 @@
+{
+	"name": "georgringer/oidc-be",
+	"type": "typo3-cms-extension",
+	"autoload": {
+		"psr-4": {
+			"GeorgRinger\\OidcBe\\": "Classes"
+		}
+	},
+	"require": {
+		"causal/oidc": "*"
+	},
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "oidc_be"
+		}
+	}
+}
