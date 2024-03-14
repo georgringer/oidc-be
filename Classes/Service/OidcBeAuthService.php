@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 namespace GeorgRinger\OidcBe\Service;
 
-use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class OidcBeAuthService extends \Causal\Oidc\Service\AuthenticationService
 {

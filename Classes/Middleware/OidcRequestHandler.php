@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace GeorgRinger\OidcBe\Middleware;
 
@@ -10,9 +11,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerAwareInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\RedirectResponse;
-use TYPO3\CMS\Core\Http\Stream;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 final class OidcRequestHandler implements MiddlewareInterface, LoggerAwareInterface
 {
@@ -20,42 +19,30 @@ final class OidcRequestHandler implements MiddlewareInterface, LoggerAwareInterf
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-
-        $p = $request->getParsedBody();
-        $p2 = $request->getQueryParams();
-//        die('xxx');
-        if (($p['oidcProvider'] ?? '') === '1710277788') {
-
-            if (isset($p['code'], $p['state'])) {
+        $parsedBody = $request->getParsedBody();
+        $queryParams = $request->getQueryParams();
+        if (($parsedBody['oidcProvider'] ?? '') === '1710277788') {
+            if (isset($parsedBody['code'], $parsedBody['state'])) {
 
             } else {
-                $url = $this->modifyLoginFormView();
-                $response = new RedirectResponse(
-                    $url,
+                return new RedirectResponse(
+                    $this->getAUthUrl(),
                     307,
                     ['X-Redirect-By' => 'oidc_be']
                 );
-                return $response;
             }
-
-
-        } elseif ((($p2['route'] ?? '/login') === '/login')
-            && !isset($p2['uname'])
-            && !isset($p2['login_status'])
-            && isset($p2['code'], $p2['state'])) {
+        } elseif ((($queryParams['route'] ?? '/login') === '/login')
+            && !isset($queryParams['uname'])
+            && !isset($queryParams['login_status'])
+            && isset($queryParams['code'], $queryParams['state'])) {
 
             $uri = $request->getUri() . '&login_status=login&uname=oidc&uident=oidc';
-//            $request = $request->withQueryParams(['login_status' => 'login', 'uname' => 'oidc', 'uident' => 'oidc']);
-//            $request = $request->withParsedBody(array_merge((array)$p, ['login_status' => 'login', 'uname' => 'oidc', 'uident' => 'oidc']));
-//        DebuggerUtility::var_dump($request);die;
-//            echo $request->getUri();die;
             return new RedirectResponse($uri, 307, ['X-Redirect-By' => 'oidc_be']);
         }
         return $handler->handle($request);
     }
 
-
-    public function modifyLoginFormView(): string
+    public function getAUthUrl(): string
     {
         $settings = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('oidc') ?? [];
 
@@ -77,8 +64,6 @@ final class OidcRequestHandler implements MiddlewareInterface, LoggerAwareInterf
             $this->prepareAuthorizationUrl($settings);
             $_SESSION['requestId'] = $requestId;
             $_SESSION['oidc_redirect_url'] = GeneralUtility::_GP('redirect_url');
-
-        } else {
         }
 
         return $_SESSION['oidc_authorization_url'];
@@ -98,11 +83,6 @@ final class OidcRequestHandler implements MiddlewareInterface, LoggerAwareInterf
 
         // Store the state
         $state = $service->getState();
-
-//        $this->logger->debug('Generating authorization URL', [
-//            'url' => $authorizationUrl,
-//            'state' => $state,
-//        ]);
 
         $loginUrl = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
         // Sanitize the URL
@@ -128,17 +108,6 @@ final class OidcRequestHandler implements MiddlewareInterface, LoggerAwareInterf
         $_SESSION['oidc_authorization_url'] = $authorizationUrl;
     }
 
-    /**
-     * Returns a unique ID for the current processed request.
-     *
-     * This is supposed to be independent of the actual web server (Nginx or Apache) and
-     * the way PHP was built and unique enough for our use case, as opposed to using:
-     *
-     * - zend_thread_id() which requires PHP to be built with Zend Thread Safety - ZTS - support and debug mode
-     * - apache_getenv('UNIQUE_ID') which requires Apache as web server and mod_unique_id
-     *
-     * @return string
-     */
     protected function getUniqueId(): string
     {
         return sprintf('%08x', abs(crc32($_SERVER['REMOTE_ADDR'] . $_SERVER['REQUEST_TIME'] . $_SERVER['REMOTE_PORT'])));
