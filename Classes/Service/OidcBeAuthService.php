@@ -31,8 +31,6 @@ class OidcBeAuthService extends \Causal\Oidc\Service\AuthenticationService
     }
     public function getUser()
     {
-        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
-
         $user = false;
         $request = ServerRequestFactory::fromGlobals();
         $params = $request->getQueryParams() ;

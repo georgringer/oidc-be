@@ -39,7 +39,7 @@ final class OidcRequestHandler implements MiddlewareInterface, LoggerAwareInterf
             }
 
 
-        } elseif ((($p2['route'] ?? '') === '/login')
+        } elseif ((($p2['route'] ?? '/login') === '/login')
             && !isset($p2['uname'])
             && !isset($p2['login_status'])
             && isset($p2['code'], $p2['state'])) {
