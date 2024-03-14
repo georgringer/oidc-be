@@ -43,25 +43,6 @@ class OidcBeAuthService extends \Causal\Oidc\Service\AuthenticationService
                 $codeVerifier = $this->getCodeVerifierFromSession();
             }
             $user = $this->authenticateWithAuthorizationCode($code, $codeVerifier);
-        } else {
-            $event = new AuthenticationPreUserEvent($this->login);
-            $eventDispatcher->dispatch($event);
-            if (!$event->shouldProcess) {
-                return false;
-            }
-            $this->login = $event->loginData;
-
-            $username = $this->login['uname'] ?? null;
-            if (isset($this->login['uident_text'])) {
-                $password = $this->login['uident_text'];
-            } elseif (isset($this->login['uident'])) {
-                $password = $this->login['uident'];
-            } else {
-                $password = null;
-            }
-            if (!empty($username) && !empty($password)) {
-                $user = $this->authenticateWithResourceOwnerPasswordCredentials($username, $password);
-            }
         }
 
         return $user;
