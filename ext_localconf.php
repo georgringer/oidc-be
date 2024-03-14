@@ -16,9 +16,9 @@ $settings = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core
     [
         'title' => 'Authentication service',
         'description' => 'Authentication service for OpenID Connect BE',
-        'subtype' => 'getUserBE,authUserBE,getGroupsBE,processLoginDataBE,processLoginData',
+        'subtype' => 'getUserBE,authUserBE,getGroupsBE',
         'available' => true,
-        'priority' => (int)($settings['authenticationServicePriority'] ?? 30),
+        'priority' => 30,
         'quality' => (int)($settings['authenticationServiceQuality'] ?? 80),
         'os' => '',
         'exec' => '',

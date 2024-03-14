@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace GeorgRinger\OidcBe\Service;
 
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class OidcBeAuthService extends \Causal\Oidc\Service\AuthenticationService
 {
@@ -18,15 +17,6 @@ class OidcBeAuthService extends \Causal\Oidc\Service\AuthenticationService
         $this->config['usersStoragePid'] = 0;
     }
 
-    public function processLoginData(array &$loginData, $passwordTransmissionStrategy)
-    {
-        $get = GeneralUtility::_GET();
-        if (isset($get['code'])) {
-            $loginData['uname'] = 'oid';
-            $loginData['uident'] = 'oid';
-            $loginData['uident_text'] = 'oid';
-        }
-    }
     public function getUser()
     {
         $user = false;
@@ -48,6 +38,5 @@ class OidcBeAuthService extends \Causal\Oidc\Service\AuthenticationService
     {
         return [];
     }
-
-
+    
 }
