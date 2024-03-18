@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace GeorgRinger\OidcBe\Service;
 
+use IMATHUZH\OidcClient\Utility\AuthenticationStatus;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 
 class OidcBeAuthService extends \Causal\Oidc\Service\AuthenticationService
@@ -21,7 +22,7 @@ class OidcBeAuthService extends \Causal\Oidc\Service\AuthenticationService
     {
         $user = false;
         $request = ServerRequestFactory::fromGlobals();
-        $params = $request->getQueryParams() ;
+        $params = $request->getQueryParams();
         $code = $params['code'] ?? null;
         if ($code !== null) {
             $codeVerifier = null;
@@ -38,5 +39,5 @@ class OidcBeAuthService extends \Causal\Oidc\Service\AuthenticationService
     {
         return [];
     }
-    
+
 }
