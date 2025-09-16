@@ -79,7 +79,7 @@ final class OidcRequestHandler implements MiddlewareInterface, LoggerAwareInterf
     {
         $service = GeneralUtility::makeInstance(OAuthService::class);
         $service->setSettings($settings);
-        $authorizationUrl = $service->getAuthorizationUrl();
+        $authorizationUrl = $service->getAuthorizationUrl(null, []);
 
         // Store the state
         $state = $service->getState();

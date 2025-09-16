@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace GeorgRinger\OidcBe\Service;
 
 use IMATHUZH\OidcClient\Utility\AuthenticationStatus;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 
 class OidcBeAuthService extends \Causal\Oidc\Service\AuthenticationService
@@ -18,7 +19,7 @@ class OidcBeAuthService extends \Causal\Oidc\Service\AuthenticationService
         $this->config['usersStoragePid'] = 0;
     }
 
-    public function getUser()
+    public function getUser(): bool|array
     {
         $user = false;
         $request = ServerRequestFactory::fromGlobals();
@@ -35,7 +36,7 @@ class OidcBeAuthService extends \Causal\Oidc\Service\AuthenticationService
         return $user;
     }
 
-    protected function getMapping(string $table): array
+    protected function getMapping(string $table, ServerRequestInterface $request): array
     {
         return [];
     }
