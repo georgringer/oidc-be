@@ -1,0 +1,14 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  GeorgRinger\OidcBe\:
+    resource: '../Classes/*'
+
+  GeorgRinger\OidcBe\Service\OAuthService:
+    public: true
+
+  GeorgRinger\OidcBe\Service\OpenIdConnectService:
+    public: true
