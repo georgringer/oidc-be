@@ -13,6 +13,7 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+
 final class OidcRequestHandler implements MiddlewareInterface, LoggerAwareInterface
 {
     use \Psr\Log\LoggerAwareTrait;
@@ -26,7 +27,7 @@ final class OidcRequestHandler implements MiddlewareInterface, LoggerAwareInterf
 
             } else {
                 return new RedirectResponse(
-                    $this->getAUthUrl(),
+                    $this->getAUthUrl($request),
                     307,
                     ['X-Redirect-By' => 'oidc_be']
                 );
@@ -42,7 +43,7 @@ final class OidcRequestHandler implements MiddlewareInterface, LoggerAwareInterf
         return $handler->handle($request);
     }
 
-    public function getAUthUrl(): string
+    public function getAUthUrl($request): string
     {
         $settings = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('oidc') ?? [];
 
@@ -63,7 +64,7 @@ final class OidcRequestHandler implements MiddlewareInterface, LoggerAwareInterf
         if (empty($_SESSION['requestId']) || $_SESSION['requestId'] !== $requestId) {
             $this->prepareAuthorizationUrl($settings);
             $_SESSION['requestId'] = $requestId;
-            $_SESSION['oidc_redirect_url'] = GeneralUtility::_GP('redirect_url');
+            $_SESSION['oidc_redirect_url'] = $request->getParsedBody()['redirect_url'] ?? $request->getQueryParams()['redirect_url'] ?? null;
         }
 
         return $_SESSION['oidc_authorization_url'];
